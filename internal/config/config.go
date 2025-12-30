@@ -9,6 +9,7 @@ import (
 type Config struct {
 	Port  string
 	Redis RedisConfig
+	R2    R2Config
 }
 
 type RedisConfig struct {
@@ -16,6 +17,13 @@ type RedisConfig struct {
 	Password string
 	DB       int
 	CacheTTL time.Duration
+}
+
+type R2Config struct {
+	AccountID       string
+	AccessKeyID     string
+	SecretAccessKey string
+	BucketName      string
 }
 
 func Load() *Config {
@@ -26,6 +34,12 @@ func Load() *Config {
 			Password: getEnv("REDIS_PASSWORD", ""),
 			DB:       getEnvAsInt("REDIS_DB", 0),
 			CacheTTL: getEnvAsDuration("CACHE_TTL", 5*time.Minute),
+		},
+		R2: R2Config{
+			AccountID:       getEnv("R2_ACCOUNT_ID", ""),
+			AccessKeyID:     getEnv("R2_ACCESS_KEY_ID", ""),
+			SecretAccessKey: getEnv("R2_SECRET_ACCESS_KEY", ""),
+			BucketName:      getEnv("R2_BUCKET_NAME", ""),
 		},
 	}
 }
