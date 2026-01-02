@@ -1,0 +1,19 @@
+# Prometheus Configuration
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Scrape Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Scrape your file-caching-service
+  # When running with: go run cmd/server/main.go
+  - job_name: 'file-caching-service'
+    static_configs:
+      - targets: ['host.docker.internal:8080']  # macOS/Windows Docker
+    metrics_path: /metrics
+    scrape_interval: 10s
+
