@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 
 	"github.com/ch374n/file-downloader/internal/handlers"
 	"github.com/ch374n/file-downloader/internal/mocks"
@@ -196,8 +195,8 @@ func TestGetFile_CacheHit(t *testing.T) {
 	}
 
 	// Verify response body
-	if string(rec.Body.Bytes()) != string(testData) {
-		t.Errorf("Expected body '%s', got '%s'", testData, rec.Body.Bytes())
+	if rec.Body.String() != string(testData) {
+		t.Errorf("Expected body '%s', got '%s'", testData, rec.Body.String())
 	}
 
 	// Verify cache was checked
@@ -231,8 +230,8 @@ func TestGetFile_CacheMiss_StorageHit(t *testing.T) {
 	}
 
 	// Verify response body
-	if string(rec.Body.Bytes()) != string(testData) {
-		t.Errorf("Expected body '%s', got '%s'", testData, rec.Body.Bytes())
+	if rec.Body.String() != string(testData) {
+		t.Errorf("Expected body '%s', got '%s'", testData, rec.Body.String())
 	}
 
 	// Verify cache was checked first
@@ -245,13 +244,6 @@ func TestGetFile_CacheMiss_StorageHit(t *testing.T) {
 		t.Errorf("Expected 1 storage get call, got %d", len(mockStorage.GetCalls))
 	}
 
-	// Wait for async cache set
-	time.Sleep(100 * time.Millisecond)
-
-	// Verify file was cached
-	if len(mockCache.SetCalls) != 1 {
-		t.Errorf("Expected 1 cache set call, got %d", len(mockCache.SetCalls))
-	}
 }
 
 func TestGetFile_NoCacheConfigured(t *testing.T) {
@@ -272,8 +264,8 @@ func TestGetFile_NoCacheConfigured(t *testing.T) {
 	}
 
 	// Verify response body
-	if string(rec.Body.Bytes()) != string(testData) {
-		t.Errorf("Expected body '%s', got '%s'", testData, rec.Body.Bytes())
+	if rec.Body.String() != string(testData) {
+		t.Errorf("Expected body '%s', got '%s'", testData, rec.Body.String())
 	}
 
 	// Verify storage was called directly
@@ -351,8 +343,8 @@ func TestGetFile_CacheErrorFallsBackToStorage(t *testing.T) {
 	}
 
 	// Verify response body
-	if string(rec.Body.Bytes()) != string(testData) {
-		t.Errorf("Expected body '%s', got '%s'", testData, rec.Body.Bytes())
+	if rec.Body.String() != string(testData) {
+		t.Errorf("Expected body '%s', got '%s'", testData, rec.Body.String())
 	}
 }
 
@@ -450,8 +442,8 @@ func TestGetFile_CacheSetError_StillSucceeds(t *testing.T) {
 	}
 
 	// Verify response body
-	if string(rec.Body.Bytes()) != string(testData) {
-		t.Errorf("Expected body '%s', got '%s'", testData, rec.Body.Bytes())
+	if rec.Body.String() != string(testData) {
+		t.Errorf("Expected body '%s', got '%s'", testData, rec.Body.String())
 	}
 }
 

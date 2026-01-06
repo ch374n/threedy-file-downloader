@@ -93,8 +93,9 @@ func main() {
 	mux.Handle("GET /metrics", promhttp.Handler())
 
 	server := &http.Server{
-		Addr:    ":" + cfg.Port,
-		Handler: mux,
+		Addr:              ":" + cfg.Port,
+		Handler:           mux,
+		ReadHeaderTimeout: 10 * time.Second,
 	}
 
 	slog.Info("Starting server", "port", cfg.Port)
