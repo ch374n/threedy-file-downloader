@@ -46,30 +46,42 @@ jobs:
         run: make kind-deploy
 
       - name: Wait for pods to be ready
-        run: make kind-wait-ready
-
-      - name: Start port-forward
         run: |
+          make kind-wait-ready
+          echo "Waiting additional 30s for Redis to be fully ready..."
+          sleep 30
+
+      - name: Run integration tests
+        run: |
+          # Start port-forward in background
           kubectl port-forward svc/file-caching-service 8080:80 &
+          PF_PID=$!
           sleep 5
-          echo "Port-forward started"
-
-      - name: Verify service is ready
-        run: |
+          
+          # Verify service is ready
+          echo "Verifying service is ready..."
           for i in {1..30}; do
-            if curl -s http://localhost:8080/health | grep -q "healthy"; then
+            if curl -s http://localhost:8080/health | grep -q "success"; then
               echo "Service is ready!"
-              exit 0
+              break
+            fi
+            if [ $i -eq 30 ]; then
+              echo "Service failed to become ready"
+              kubectl logs -l app.kubernetes.io/name=file-caching-service --tail=50
+              kill $PF_PID 2>/dev/null || true
+              exit 1
             fi
             echo "Waiting for service... attempt $i"
             sleep 2
           done
-          echo "Service failed to become ready"
-          kubectl logs -l app.kubernetes.io/name=file-caching-service --tail=50
-          exit 1
-
-      - name: Run integration tests
-        run: make kind-run-tests
+          
+          # Run tests
+          SERVICE_URL=http://localhost:8080 TEST_FILE_NAME=$TEST_FILE_NAME go test -v ./tests/integration/... -timeout 5m
+          TEST_EXIT=$?
+          
+          # Cleanup
+          kill $PF_PID 2>/dev/null || true
+          exit $TEST_EXIT
 
       - name: Show logs on failure
         if: failure()
