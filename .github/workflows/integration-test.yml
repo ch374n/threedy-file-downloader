@@ -50,8 +50,9 @@ jobs:
 
       - name: Start port-forward
         run: |
-          make kind-port-forward
+          kubectl port-forward svc/file-caching-service 8080:80 &
           sleep 5
+          echo "Port-forward started"
 
       - name: Verify service is ready
         run: |
