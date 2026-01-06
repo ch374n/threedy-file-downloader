@@ -34,7 +34,8 @@ linters-settings:
   govet:
     enable-all: true
     disable:
-      - shadow  # Too many false positives
+      - shadow        # Too many false positives
+      - fieldalignment  # Struct field alignment optimization is too strict
 
   gosec:
     excludes:
