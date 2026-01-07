@@ -281,7 +281,7 @@ k8s-app-up: ## Deploy application with Redis to Kubernetes
 	@echo "$(GREEN)Deploying application with Redis...$(NC)"
 	helm upgrade --install $(HELM_RELEASE) ./helm/$(APP_NAME) \
 		--namespace $(NAMESPACE) \
-		-f helm/$(APP_NAME)/values-local.yaml \
+		-f helm/$(APP_NAME)/values.yaml \
 		--set redis.enabled=true \
 		--set image.repository=$(APP_NAME) \
 		--set image.tag=latest
@@ -292,7 +292,7 @@ k8s-app-up-no-cache: ## Deploy application without Redis cache
 	@echo "$(GREEN)Deploying application without Redis cache...$(NC)"
 	helm upgrade --install $(HELM_RELEASE) ./helm/$(APP_NAME) \
 		--namespace $(NAMESPACE) \
-		-f helm/$(APP_NAME)/values-local.yaml \
+		-f helm/$(APP_NAME)/values.yaml \
 		--set redis.enabled=false \
 		--set image.repository=$(APP_NAME) \
 		--set image.tag=latest

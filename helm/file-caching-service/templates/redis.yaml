@@ -10,12 +10,12 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "file-caching-service.selectorLabels" . | nindent 6 }}
+      {{- include "file-caching-service-redis.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: redis
   template:
     metadata:
       labels:
-        {{- include "file-caching-service.selectorLabels" . | nindent 8 }}
+        {{- include "file-caching-service-redis.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: redis
     spec:
       containers:
@@ -61,7 +61,7 @@ spec:
       protocol: TCP
       name: redis
   selector:
-    {{- include "file-caching-service.selectorLabels" . | nindent 4 }}
+    {{- include "file-caching-service-redis.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: redis
 {{- end }}
 

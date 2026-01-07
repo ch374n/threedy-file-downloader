@@ -41,13 +41,7 @@ spec:
               done
               echo "Redis is ready!"
           securityContext:
-            runAsNonRoot: true
-            runAsUser: 1000
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop:
-                - ALL
+            {{- toYaml .Values.securityContext | nindent 12 }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}

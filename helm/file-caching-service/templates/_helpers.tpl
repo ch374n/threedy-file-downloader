@@ -47,4 +47,8 @@ Selector labels
 app.kubernetes.io/name: {{ include "file-caching-service.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+{{ define "file-caching-service-redis.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "file-caching-service.name" . }}-redis
+app.kubernetes.io/instance: {{ .Release.Name }}-redis
+{{- end }}
 
